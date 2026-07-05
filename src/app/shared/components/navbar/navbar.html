@@ -1,0 +1,15 @@
+<mat-toolbar color="primary" *ngIf="isAuth$ | async" class="main-navbar">
+  <span>MerkaMundo</span>
+  
+  <span class="spacer"></span>
+  
+  <div class="nav-links">
+    <a mat-button routerLink="/home" routerLinkActive="active-link">Inicio</a>
+    <a mat-button routerLink="/sale" routerLinkActive="active-link">Ventas</a>
+    
+    <button mat-raised-button color="warn" (click)="onLogout()">Cerrar Sesión</button>
+  </div>
+</mat-toolbar>
+
+<router-outlet></router-outlet>
+

@@ -1,0 +1,15 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 85vh; /* Evita chocar con el espacio de la navbar si estuviera presente */
+}
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+}
+.full-width {
+  width: 100%;
+  margin-bottom: 15px;
+}

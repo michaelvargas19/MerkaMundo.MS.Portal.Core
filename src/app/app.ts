@@ -1,12 +1,26 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { AuthService } from './core/services/auth';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
   templateUrl: './app.html',
+  standalone: false,
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('MerkaMundo.MS.Portal.Core');
+  
+  isAuth$!: Observable<boolean>;
+
+  protected readonly title = signal('MerkaMundo');
+
+  constructor(private authService: AuthService) {
+  
+    this.isAuth$ = this.authService.isLoggedIn();
+
+    if(this.isAuth$) { 
+      this.authService.signalSyncLogin();      
+    }
+  }
+
 }
