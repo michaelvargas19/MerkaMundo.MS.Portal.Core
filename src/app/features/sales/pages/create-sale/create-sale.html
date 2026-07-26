@@ -1,0 +1,280 @@
+<div class="sales-dashboard-container">
+  
+ <!-- Encabezado superior -->
+<div class="dashboard-header-bar" [formGroup]="saleForm">
+
+  <!-- Lado Izquierdo: Título y Punto de Venta -->
+  <div>
+    <h2>Nueva Venta — MerkaMundo</h2>
+  </div>
+  
+  <!-- Lado Derecho: Gestión Dinámica de Cliente -->
+  <div class="client-inline-section">
+
+      <!-- ESTADO 2: Sin Cliente (Selector Habilitado) -->
+      <div class="client-select-wrapper">
+        <mat-form-field appearance="outline" class="client-compact-select">
+          <mat-label>Tipo de Cliente</mat-label>
+          <mat-select formControlName="customerId" (selectionChange)="onCustomerTypeChange($event.value)">
+            @for (type of customerTypes; track type.id) {
+              <mat-option [value]="type.id">
+                {{ type.label }}
+              </mat-option>
+            }
+          </mat-select>
+          <mat-icon matSuffix color="action">person_search</mat-icon>
+        </mat-form-field>
+      </div>
+    
+  </div>
+
+</div>
+
+  <div class="dashboard-content">
+    
+    <!-- Columna Principal -->
+    <div class="main-panel">
+      
+      <!-- Zona 1: Filtros de Búsqueda de Producto -->
+      <section class="quick-actions-card">
+        <h3>Búsqueda y Filtros de Productos</h3>
+        <form [formGroup]="filterForm" (ngSubmit)="onSearchProducts()" class="filter-form-grid">
+  
+  <!-- Fila 1: Código de Barras (Línea completa y prominente) -->
+  <mat-form-field appearance="outline" class="full-width-field barcode-field">
+    <mat-label>Código de Barras</mat-label>
+    <input matInput formControlName="barcode" placeholder="Escanear o digitar código de barras..." autofocus (change)="onSearchByBarCode()" />
+    <mat-icon matSuffix>qr_code_scanner</mat-icon>
+  </mat-form-field>
+
+  <!-- Fila 2: Filtros complementarios y botón de búsqueda -->
+  <div class="secondary-filters-row">
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Tipo de Producto</mat-label>
+      <mat-select formControlName="productType">
+        @for (type of productTypes; track type.value) {
+          <mat-option [value]="type.value">{{ type.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field grow-field">
+      <mat-label>Nombre o Descripción</mat-label>
+      <input matInput formControlName="searchTerm" placeholder="Ej: Arroz 1kg, Aceite..." />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <div class="search-button-container">
+      <button mat-raised-button color="primary" type="submit" class="search-btn">
+        <mat-icon>search</mat-icon> Buscar
+      </button>
+    </div>
+  </div>
+
+</form>
+      </section>
+
+      <!-- Zona 2: Tabla Editable de Carrito -->
+      <section class="table-card">
+        <h3>Productos Agregados ({{ totalItemsCount }})</h3>
+        
+        <div class="table-container mat-elevation-z1">
+          <table mat-table [dataSource]="cartItems">
+
+            <ng-container matColumnDef="barcode">
+              <th mat-header-cell *matHeaderCellDef> Cód. Barras </th>
+              <td mat-cell *matCellDef="let element"> {{ element.Barcode }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="productName">
+              <th mat-header-cell *matHeaderCellDef> Producto </th>
+              <td mat-cell *matCellDef="let element"> <strong>{{ element.ProductName }}</strong> </td>
+            </ng-container>
+
+            <ng-container matColumnDef="productType">
+              <th mat-header-cell *matHeaderCellDef> Tipo </th>
+              <td mat-cell *matCellDef="let element"> {{ element.ProductType }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="unitPrice">
+              <th mat-header-cell *matHeaderCellDef> P. Unitario </th>
+              <td mat-cell *matCellDef="let element"> 
+                {{ element.UnitPrice | currency:'COP':'symbol':'1.0-0' }} 
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="quantity">
+              <th mat-header-cell *matHeaderCellDef class="text-center"> Cantidad </th>
+              <td mat-cell *matCellDef="let element" class="text-center">
+                <div class="qty-editor">
+                  <button type="button" mat-icon-button (click)="updateQuantity(element, element.Quantity - 1)">
+                    <mat-icon>remove</mat-icon>
+                  </button>
+                  <input 
+                    type="number" 
+                    class="qty-input" 
+                    [value]="element.Quantity"
+                    min="1"
+                    (change)="updateQuantity(element, $any($event.target).value)" 
+                  />
+                  <button type="button" mat-icon-button (click)="updateQuantity(element, element.Quantity + 1)">
+                    <mat-icon>add</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="subtotal">
+              <th mat-header-cell *matHeaderCellDef> Subtotal </th>
+              <td mat-cell *matCellDef="let element">
+                <strong>{{ element.Subtotal | currency:'COP':'symbol':'1.0-0' }}</strong>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef> </th>
+              <td mat-cell *matCellDef="let element">
+                <button type="button" mat-icon-button color="warn" (click)="removeItem(element)" title="Eliminar ítem">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+
+          @if (cartItems.length === 0) {
+            <div class="empty-cart-message">
+              <mat-icon>add_shopping_cart</mat-icon>
+              <p>No hay productos agregados al carrito. Use la búsqueda para añadir ítems.</p>
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- Zona 3: Formulario Metadatos de la Venta (DTO Header) -->
+      <section class="quick-actions-card">
+        <h3>Datos de la Transacción</h3>
+        <form [formGroup]="saleForm" class="sale-header-grid">
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Nº Venta</mat-label>
+            <input matInput formControlName="saleNumber" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Método de Pago</mat-label>
+            <mat-select formControlName="paymentMethodId">
+              @for (pm of paymentMethods; track pm.id) {
+                <mat-option [value]="pm.id">{{ pm.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Tipo de Entrega</mat-label>
+            <mat-select formControlName="deliveryTypeId">
+              @for (dt of deliveryTypes; track dt.id) {
+                <mat-option [value]="dt.id">{{ dt.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Fecha de Venta</mat-label>
+            <input matInput [matDatepicker]="pickerSale" formControlName="saleDate">
+            <mat-datepicker-toggle matIconSuffix [for]="pickerSale"></mat-datepicker-toggle>
+            <mat-datepicker #pickerSale></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Fecha Estimada de Entrega</mat-label>
+            <input matInput [matDatepicker]="pickerDelivery" formControlName="deliveryDate">
+            <mat-datepicker-toggle matIconSuffix [for]="pickerDelivery"></mat-datepicker-toggle>
+            <mat-datepicker #pickerDelivery></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="notes-field">
+            <mat-label>Observaciones / Notas</mat-label>
+            <input matInput formControlName="notes" placeholder="Detalles de entrega, instrucciones de facturación..." />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Descuento ($)</mat-label>
+            <input matInput type="number" formControlName="totalDiscount" min="0" />
+            <span matPrefix>$&nbsp;</span>
+          </mat-form-field>
+
+        </form>
+      </section>
+
+      <!-- Zona 4: Acciones Finales -->
+      <section class="summary-card checkout-footer">
+        <div class="totals-display">
+          <span class="total-label">Total Venta:</span>
+          <span class="total-amount">{{ calculatedTotal | currency:'COP':'symbol':'1.0-0' }}</span>
+        </div>
+
+        <div class="buttons-group">
+          <button mat-stroked-button color="warn" type="button" (click)="onCancelSale()" [disabled]="cartItems.length === 0">
+            <mat-icon>clear</mat-icon> Cancelar
+          </button>
+          <button mat-raised-button color="primary" type="button" (click)="onSaveSale()" [disabled]="cartItems.length === 0">
+            <mat-icon>check_circle</mat-icon> Guardar Venta
+          </button>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Columna Derecha: Panel de Desglose de Totales Calculados -->
+    <aside class="summary-panel">
+      <div class="summary-card">
+        <h3>Desglose de Totales</h3>
+
+        <div class="metric-item">
+          <div class="metric-icon count-icon">
+            <mat-icon>receipt</mat-icon>
+          </div>
+          <div class="metric-data">
+            <span class="label">Subtotal</span>
+            <span class="value">{{ calculatedSubtotal | currency:'COP':'symbol':'1.0-0' }}</span>
+          </div>
+        </div>
+
+        <div class="metric-item">
+          <div class="metric-icon delivery-icon">
+            <mat-icon>local_offer</mat-icon>
+          </div>
+          <div class="metric-data">
+            <span class="label">Descuento Aplicado</span>
+            <span class="value">{{ (saleForm.get('totalDiscount')?.value || 0) | currency:'COP':'symbol':'1.0-0' }}</span>
+          </div>
+        </div>
+
+        <div class="metric-item">
+          <div class="metric-icon delivery-icon">
+            <mat-icon>account_balance</mat-icon>
+          </div>
+          <div class="metric-data">
+            <span class="label">Impuestos (IVA 19%)</span>
+            <span class="value">{{ calculatedTax | currency:'COP':'symbol':'1.0-0' }}</span>
+          </div>
+        </div>
+
+        <div class="metric-item highlight">
+          <div class="metric-icon total-icon">
+            <mat-icon>payments</mat-icon>
+          </div>
+          <div class="metric-data">
+            <span class="label">Total Neto</span>
+            <span class="value">{{ calculatedTotal | currency:'COP':'symbol':'1.0-0' }}</span>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+  </div>
+</div>

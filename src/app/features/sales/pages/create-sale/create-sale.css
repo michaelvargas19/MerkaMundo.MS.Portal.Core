@@ -1,0 +1,385 @@
+.sales-dashboard-container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 64px);
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 16px 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.dashboard-header h2 {
+  margin: 0;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.subtitle {
+  margin: 4px 0 0 0;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.date-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #eef2f5;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 500;
+  color: #34495e;
+}
+
+.dashboard-content {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 20px;
+}
+
+@media (max-width: 992px) {
+  .dashboard-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+.main-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.quick-actions-card, .table-card, .summary-card {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.quick-actions-card h3, .table-card h3, .summary-card h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+/* Formulario de Búsqueda */
+.filter-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.5fr auto;
+  gap: 16px;
+  align-items: center;
+}
+
+/* Formulario Principal de Venta */
+.sale-header-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.notes-field {
+  grid-column: span 3;
+}
+
+@media (max-width: 1200px) {
+  .filter-form-grid, .sale-header-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .notes-field {
+    grid-column: span 2;
+  }
+}
+
+.search-button-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.search-btn {
+  height: 56px;
+  padding: 0 24px;
+}
+
+/* Tabla */
+.table-container {
+  overflow-x: auto;
+  border-radius: 4px;
+}
+
+table {
+  width: 100%;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.qty-editor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.qty-input {
+  width: 50px;
+  height: 36px;
+  text-align: center;
+  font-weight: 600;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+
+.qty-input:focus {
+  border-color: #3f51b5;
+}
+
+.empty-cart-message {
+  padding: 40px 20px;
+  text-align: center;
+  color: #95a5a6;
+}
+
+.empty-cart-message mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 8px;
+}
+
+/* Pie de página y Totales */
+.checkout-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.totals-display {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.total-label {
+  font-size: 1.1rem;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+.total-amount {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2e7d32;
+}
+
+.buttons-group {
+  display: flex;
+  gap: 16px;
+}
+
+.buttons-group button {
+  padding: 0 24px;
+  height: 48px;
+  font-weight: 500;
+}
+
+.buttons-group mat-icon {
+  margin-right: 8px;
+}
+
+/* Métricas del panel derecho */
+.summary-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.metric-item:last-child {
+  border-bottom: none;
+}
+
+.metric-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.total-icon { background-color: #e8f5e9; color: #2e7d32; }
+.count-icon { background-color: #e3f2fd; color: #1565c0; }
+.delivery-icon { background-color: #fff3e0; color: #e65100; }
+
+.metric-data {
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-data .label {
+  font-size: 0.85rem;
+  color: #7f8c8d;
+}
+
+.metric-data .value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.metric-item.highlight .value {
+  color: #2e7d32;
+}
+.filter-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Campo de código de barras amplio a todo lo ancho */
+.barcode-field {
+  width: 100%;
+}
+
+/* Para darle una presencia visual más destacada al lector de código de barras */
+.barcode-field .mat-mdc-text-field-wrapper {
+  background-color: #f8fafc;
+}
+
+.barcode-field input {
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* Fila secundaria con los demás campos alineados */
+.secondary-filters-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+/* El campo de búsqueda por nombre toma el espacio restante */
+.grow-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filter-field {
+  min-width: 180px;
+}
+
+.search-button-container {
+  display: flex;
+  align-items: center;
+  /* Alineación vertical con la parte inferior de los mat-form-field */
+  padding-bottom: 22px; 
+}
+
+.search-btn {
+  height: 48px;
+  padding: 0 24px;
+}
+
+/* Responsive: en pantallas pequeñas todo pasa a una sola columna */
+@media (max-width: 768px) {
+  .secondary-filters-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .grow-field,
+  .filter-field {
+    width: 100%;
+  }
+
+  .search-button-container {
+    padding-bottom: 0;
+    width: 100%;
+  }
+
+  .search-btn {
+    width: 100%;
+  }
+}
+
+.client-selection-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 20px;
+  margin-top: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Estado 1: Cliente asignado */
+.selected-client-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.client-data {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.client-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+
+.client-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.client-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.client-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* Estado 2: Selector */
+.client-select-wrapper {
+  width: 100%;
+  text-align-last: right;
+}
+
+.client-field {
+  width: 100%;
+  margin-bottom: -1.25em; /* Compensar margen inferior por defecto de mat-form-field */
+}   

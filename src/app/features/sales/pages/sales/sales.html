@@ -1,0 +1,81 @@
+<div class="sales-dashboard-container">
+  
+  <!-- Encabezado del Panel -->
+  <header class="dashboard-header">
+    <div>
+      <h2>Panel de Control de Ventas</h2>
+      <p class="subtitle">Gestión y resumen operativo diario</p>
+    </div>
+    <div class="date-badge">
+      <mat-icon>calendar_today</mat-icon>
+      <span>{{ currentDate | date:'fullDate':'':'es' | titlecase }}</span>
+    </div>
+  </header>
+
+  <div class="dashboard-content">
+    
+    <!-- COLUMNA IZQUIERDA: Accesos Rápidos + Tabla -->
+    <main class="main-panel">
+      
+      <!-- Panel de Accesos Rápidos -->
+      <section class="quick-actions-card">
+        <h3>Acciones Rápidas</h3>
+        <div class="buttons-group">
+          <button mat-raised-button color="primary" (click)="openCreateSaleModal()">
+            <mat-icon>add_shopping_cart</mat-icon>
+            Nueva Venta
+          </button>
+          <button mat-stroked-button color="accent" (click)="openSearchSaleModal()">
+            <mat-icon>search</mat-icon>
+            Buscar Venta
+          </button>
+        </div>
+      </section>
+
+      <app-list-daily-sales [todaySales]="todaySales"> </app-list-daily-sales>
+    </main>
+
+    <!-- COLUMNA DERECHA: Resumen de Ventas del Día -->
+    <aside class="summary-panel">
+      <div class="summary-card">
+        <h3>Resumen del Día</h3>
+        
+        <div class="metric-item highlight">
+          <div class="metric-icon total-icon">
+            <mat-icon>payments</mat-icon>
+          </div>
+          <div class="metric-data">
+            <span class="label">Total Ventas</span>
+            <span class="value">{{ totalSalesAmount | currency:'COP':'symbol':'1.0-0' }}</span>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="metric-item">
+          <div class="metric-icon count-icon">
+            <mat-icon>receipt_long</mat-icon>
+          </div>
+          <div class="metric-data">
+            <span class="label">Transacciones</span>
+            <span class="value">{{ todaySales.length }}</span>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="metric-item">
+          <div class="metric-icon delivery-icon">
+            <mat-icon>local_shipping</mat-icon>
+          </div>
+          <div class="metric-data">
+            <span class="label">Total Domicilios</span>
+            <span class="value">{{ totalDeliveries }}</span>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+  </div>
+</div>

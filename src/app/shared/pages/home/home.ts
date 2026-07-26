@@ -15,11 +15,9 @@ export class Home {
   isAuth$!: Observable<boolean>;
   
   constructor(private authService: AuthService,private router: Router) {
+    
     this.isAuth$ = this.authService.isLoggedIn();
 
-    if(!this.isAuth$) { 
-      router.navigate(['/']);
-    }
   }
   
 }

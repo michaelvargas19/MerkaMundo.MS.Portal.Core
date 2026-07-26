@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AccountService } from '../../../../core/services/account';
 import { AuthService } from '../../../../core/services/auth';
+import { LoginDTO } from '../../../../shared/model/account/login-dto';
+import { AccountDTO } from '../../../../shared/model/account/account-dto';
 
 @Component({
   selector: 'app-login',
@@ -19,16 +21,18 @@ export class Login implements OnInit {
     private accountService: AccountService,
     private authService: AuthService,
     private router: Router
-  ) {}
-
-  ngOnInit(): void {
+  ) {
     // Inicializamos el formulario con sus reglas de validación obligatorias
     this.loginForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(4)]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      username: ['michael.vargas', [Validators.required, Validators.minLength(4)]],
+      password: ['Colombia2026+', [Validators.required, Validators.minLength(6)]]
     });
+  }
 
+  ngOnInit(): void {
+    
     this.authService.isLoggedIn().subscribe(isLoggedIn => {
+      
       if (isLoggedIn) {
         this.router.navigate(['/home']);
       }
@@ -40,12 +44,48 @@ export class Login implements OnInit {
    * Se ejecuta al hacer submit en el formulario HTML
    */
   onSubmit(): void {
+    
     if (this.loginForm.valid) {
-      // 1. Simula el guardado de credenciales/token en el servicio
-      this.accountService.login();
+
+      //this.modal.mostrarCargando();
+      let credentials = new LoginDTO();
+      let authInfo = new AccountDTO();
+
+      credentials.username = this.loginForm.get("username")?.value;
+      credentials.password = this.loginForm.get("password")?.value;
+
+
+      this.accountService.login(credentials)
+      .subscribe(reps => {
+
+        var dto = reps.Data;
+
+        if (dto) {
+
+          this.authService.login(dto);
+
+        }else{
+          //this.modal.modalGeneral("Inicio de Sesión", reps.Message, "error");
+        }
+
+        //this.authService.setRoles(dto?.roles || []);
+        this.authService.signalSyncLogin();
+
+        this.router.navigate(['/home']);
+
+      }, error => {
+        if (error.status==400){
+          //this.modal.modalGeneral("Inicio de Sesión", error.error.Message, "warning");  
+        }else{
+          //this.modal.modalGeneral("Inicio de Sesión", error.error.Message, "error");  
+        }
+
+        if (error.status==401){
+          this.router.navigate(['/login']);
+        }
+
+      });
       
-      // 2. Redirige a la zona interna protegida
-      this.router.navigate(['/home']);
     }
   }
 }

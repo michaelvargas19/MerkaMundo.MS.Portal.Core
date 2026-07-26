@@ -1,0 +1,144 @@
+.sales-dashboard-container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 64px);
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 16px 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.dashboard-header h2 {
+  margin: 0;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.subtitle {
+  margin: 4px 0 0 0;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.date-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #eef2f5;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 500;
+  color: #34495e;
+}
+
+/* Disposición Flexbox / Grid para las 2 columnas */
+.dashboard-content {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 20px;
+}
+
+@media (max-width: 992px) {
+  .dashboard-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+.main-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.quick-actions-card, .table-card, .summary-card {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.quick-actions-card h3, .table-card h3, .summary-card h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.buttons-group {
+  display: flex;
+  gap: 16px;
+}
+
+.buttons-group button {
+  padding: 0 20px;
+  height: 48px;
+  font-weight: 500;
+}
+
+.buttons-group mat-icon {
+  margin-right: 8px;
+}
+
+.table-container {
+  overflow-x: auto;
+  border-radius: 4px;
+}
+
+table {
+  width: 100%;
+}
+
+/* Panel Derecho de Resumen */
+.summary-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.metric-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.total-icon { background-color: #e8f5e9; color: #2e7d32; }
+.count-icon { background-color: #e3f2fd; color: #1565c0; }
+.delivery-icon { background-color: #fff3e0; color: #e65100; }
+
+.metric-data {
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-data .label {
+  font-size: 0.85rem;
+  color: #7f8c8d;
+}
+
+.metric-data .value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.metric-item.highlight .value {
+  color: #2e7d32;
+}

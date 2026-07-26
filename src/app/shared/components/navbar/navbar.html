@@ -1,13 +1,14 @@
-<mat-toolbar color="primary" *ngIf="isAuth$ | async" class="main-navbar">
+<mat-toolbar color="primary" class="main-navbar">
   <span>MerkaMundo</span>
   
   <span class="spacer"></span>
   
-  <div class="nav-links">
-    <a mat-button routerLink="/home" routerLinkActive="active-link">Inicio</a>
-    <a mat-button routerLink="/sale" routerLinkActive="active-link">Ventas</a>
-    
-    <button mat-raised-button color="warn" (click)="onLogout()">Cerrar Sesión</button>
+  <div class="nav-links" >
+    <div class="nav-links" *ngIf="isAuth$ | async">
+      <a mat-button routerLink="/home" routerLinkActive="active-link">Inicio</a>
+      <a mat-button routerLink="/sales" routerLinkActive="active-link">Ventas</a>
+      <button mat-raised-button color="warn" (click)="onLogout()">Cerrar Sesión</button>
+    </div>
   </div>
 </mat-toolbar>
 

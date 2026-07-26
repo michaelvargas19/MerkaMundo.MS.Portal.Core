@@ -21,7 +21,13 @@ export class Navbar implements OnInit {
   }
 
   ngOnInit(): void {
-    
+    this.authService.isLoggedIn().subscribe(isLoggedIn => {
+      if (isLoggedIn) {
+        //this.router.navigate(['/home']);
+      }else {
+        //this.router.navigate(['/login']);
+      }
+    });
   }
 
   /**

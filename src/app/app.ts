@@ -18,9 +18,9 @@ export class App {
   
     this.isAuth$ = this.authService.isLoggedIn();
 
-    if(this.isAuth$) { 
+    //if(this.isAuth$) { 
       this.authService.signalSyncLogin();      
-    }
+    //}
   }
 
 }
