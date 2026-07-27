@@ -1,7 +1,22 @@
-      <!-- Tabla / Grid de Ventas del Día -->
+  <header class="dashboard-header">
+    <div>
+      <h2>Ventas realizadas ({{ todaySales.length }})</h2>
+    </div>
+    <div class="date-badge">
+      <form [formGroup]="filterForm" class="sale-header-grid">
+        <mat-form-field appearance="outline">
+            <mat-label>Fecha</mat-label>
+            <input matInput [matDatepicker]="pickerDelivery" formControlName="date">
+            <mat-datepicker-toggle matIconSuffix [for]="pickerDelivery"></mat-datepicker-toggle>
+            <mat-datepicker #pickerDelivery></mat-datepicker>
+          </mat-form-field>
+      </form>
+
+    </div>
+  </header>
+  
+<!-- Tabla / Grid de Ventas del Día -->
       <section class="table-card">
-        <h3>Ventas Realizadas Hoy ({{ todaySales.length }})</h3>
-        
         <div class="table-container mat-elevation-z1">
           <table mat-table [dataSource]="todaySales">
 

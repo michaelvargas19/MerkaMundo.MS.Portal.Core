@@ -1,4 +1,5 @@
 import { get } from "https";
+import { CatalogProductPriceDto } from "./catalog-product-price-dto";
 
 export class CatalogProductDto {
 
@@ -14,5 +15,7 @@ export class CatalogProductDto {
     public CreatedDate: Date | null = null;
     public ModifiedDate: Date | null = null;
     public CreatedBy: string | null = null;
+
+    public ProductPrices: CatalogProductPriceDto [] | null = [];
 
 }

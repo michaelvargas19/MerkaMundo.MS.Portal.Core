@@ -125,11 +125,37 @@ table {
   text-align: center;
 }
 
+.unitPrice-editor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
 .qty-editor {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 4px;
+}
+
+.unitPrice-input {
+  width: 100px;
+  height: 36px;
+  text-align: center;
+  font-weight: 600;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+
+.unitPrice-input:focus {
+  border-color: #3f51b5;
+}
+
+.unit-price-warning {
+  background-color: #fff9c4;
+  border-color: #f9a825;
 }
 
 .qty-input {

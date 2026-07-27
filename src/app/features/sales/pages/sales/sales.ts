@@ -12,8 +12,6 @@ import { Router } from '@angular/router';
 })
 export class Sales implements OnInit, AfterViewInit {
 
-  public currentDate: Date = new Date();
-
   //@ViewChild(ListDailySales) listDailySales!: ListDailySales;
   
   // Columnas para el grid de Angular Material

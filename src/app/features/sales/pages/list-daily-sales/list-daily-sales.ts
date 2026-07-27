@@ -1,4 +1,5 @@
-import { Component, computed, Input, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, Input, OnInit, signal } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DailySales } from '../../../../shared/model/sales/daily-sales';
 
 @Component({
@@ -10,7 +11,9 @@ import { DailySales } from '../../../../shared/model/sales/daily-sales';
 export class ListDailySales implements OnInit {
 
     public currentDate: Date = new Date();
-  
+    private fb = inject(FormBuilder);
+    public filterForm!: FormGroup;
+    
     // Columnas para el grid de Angular Material
     public displayedColumns: string[] = ['id', 'time', 'client', 'itemsCount', 'paymentMethod', 'isDelivery', 'total', 'actions'];
   
@@ -29,8 +32,19 @@ export class ListDailySales implements OnInit {
 
 
     ngOnInit(): void {
-      
-    }
+    this.initForms();
+  }
+
+    constructor() {}
+
+    private initForms(): void {
+    // Formulario de Búsqueda
+    this.filterForm = this.fb.group({
+          date: this.currentDate
+        });
+
+    
+  }
 
     load(sale: DailySales[]): void {
       
