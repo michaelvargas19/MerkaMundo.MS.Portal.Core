@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { SaleService } from '../../../../core/services/sale';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { environment } from '../../../../../environments/environment.development';
 import { CustomerDto } from '../../../../shared/model/customer/customer-dto';
 import { SaleDeliveryTypeDto } from '../../../../shared/model/sales/sale-delivery-type-dto';
 import { SalePaymentMethodDto } from '../../../../shared/model/sales/sale-payment-method-dto';
@@ -22,6 +23,7 @@ export class ListDailySales implements OnInit {
     private snackBar = inject(MatSnackBar);
     public filterForm!: FormGroup;
     public isLoadingSales = false;
+    private readonly apiBaseUrl = environment.URL_CORE;
     
     // Columnas para el grid de Angular Material
     public displayedColumns: string[] = ['id', 'time', 'client', 'paymentMethod', 'isDelivery', 'total', 'saleStatus', 'actions'];
@@ -315,13 +317,21 @@ export class ListDailySales implements OnInit {
               return;
             }
 
-            const message = error.error?.Message || 'No fue posible cargar las ventas del día';
+            const message = this.getSalesLoadErrorMessage(error);
             this.snackBar.open(message, 'Cerrar', { duration: 3000 });
             this.todaySales = [];
             this.todaySalesSignal.set([]);
             this.salesLoaded.emit([]);
           }
         });
+    }
+
+    private getSalesLoadErrorMessage(error: HttpErrorResponse): string {
+      if (error.status === 0) {
+        return `Sin conexión con API (${this.apiBaseUrl}). Verifica que el backend esté arriba y accesible en red.`;
+      }
+
+      return error.error?.Message || 'No fue posible cargar las ventas del día';
     }
 
     load(sale: SaleDto[]): void {
