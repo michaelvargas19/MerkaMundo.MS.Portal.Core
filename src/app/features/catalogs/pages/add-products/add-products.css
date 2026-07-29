@@ -1,0 +1,193 @@
+.add-product-card {
+	background: #ffffff;
+	border: 1px solid #d8dee6;
+	border-radius: 8px;
+	padding: 0.8rem;
+}
+
+.add-product-card h3 {
+	margin-top: 0;
+	margin-bottom: 0.64rem;
+	font-weight: 700;
+}
+
+.add-product-form {
+	display: grid;
+	gap: 0.4rem;
+}
+
+.add-product-form input {
+	border: 1px solid #ccd3dd;
+	border-radius: 6px;
+	padding: 0.44rem 0.56rem;
+}
+
+.add-product-form input.field-invalid {
+	border-color: #c62828;
+	background: #fff4f4;
+	box-shadow: 0 0 0 1px rgba(198, 40, 40, 0.12) inset;
+}
+
+.add-product-form input.field-updated:not(.field-invalid) {
+	border-color: #c68400;
+	background: #fff9e8;
+	box-shadow: 0 0 0 1px rgba(198, 132, 0, 0.15) inset;
+}
+
+.add-product-form button {
+	width: fit-content;
+	border: 0;
+	border-radius: 6px;
+	padding: 0.44rem 0.68rem;
+	color: #ffffff;
+	background: #0050b3;
+	cursor: pointer;
+}
+
+.detected-card {
+	display: grid;
+	gap: 0.16rem;
+	background: #eef6ff;
+	border: 1px solid #c2dafd;
+	border-radius: 6px;
+	padding: 0.48rem;
+	justify-items: center;
+	text-align: center;
+}
+
+.new-product-option {
+	background: #fff8e7;
+	border: 1px solid #f4dc9a;
+	border-radius: 6px;
+	padding: 0.48rem;
+}
+
+.new-product-option p {
+	margin: 0 0 0.4rem;
+	text-align: center;
+}
+
+.option-buttons {
+	display: flex;
+	gap: 0.4rem;
+	justify-content: center;
+}
+
+.option-buttons button {
+	background: #e2e8f0;
+	color: #334155;
+}
+
+.option-buttons button.selected {
+	background: #0050b3;
+	color: #ffffff;
+}
+
+.new-product-fields {
+	display: grid;
+	gap: 0.32rem;
+	border: 1px dashed #cbd5e1;
+	border-radius: 6px;
+	padding: 0.48rem;
+}
+
+.field-row {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 0.64rem;
+}
+
+.field-col {
+	display: grid;
+	gap: 0.28rem;
+}
+
+.new-product-fields label[for='name'],
+.new-product-fields label[for='description'],
+.new-product-fields label[for='unitOfMeasure'],
+.new-product-fields label[for='basePrice'],
+.add-product-form label[for='barcode'] {
+	text-align: center;
+	font-weight: 700;
+}
+
+.add-product-form #barcode,
+.new-product-fields #unitOfMeasure,
+.new-product-fields #basePrice {
+	width: 32%;
+	justify-self: center;
+}
+
+.new-product-fields #name,
+.new-product-fields #description {
+	width: 48%;
+	justify-self: center;
+}
+
+@media (max-width: 768px) {
+	.field-row {
+		grid-template-columns: 1fr;
+	}
+
+	.add-product-form #barcode,
+	.new-product-fields #name,
+	.new-product-fields #description,
+	.new-product-fields #unitOfMeasure,
+	.new-product-fields #basePrice {
+		width: 100%;
+	}
+}
+
+.add-product-form > button[type='submit'],
+.add-product-form > button[type='button'] {
+	justify-self: center;
+}
+
+.add-product-form .cancel-button {
+	background: #6b7280;
+}
+
+.price-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(144px, 1fr));
+	gap: 0.48rem;
+	margin-top: 0.24rem;
+}
+
+.price-card {
+	display: grid;
+	gap: 0.28rem;
+	padding: 0.44rem;
+	border: 1px solid #dbe3ef;
+	border-radius: 6px;
+	background: #f8fbff;
+}
+
+.price-card.price-card-updated {
+	border-color: #f1b329;
+	background: #fffaf0;
+}
+
+.price-card strong {
+	font-size: 0.92rem;
+	color: #1f3b63;
+}
+
+.add-product-form button:disabled {
+	opacity: 0.7;
+	cursor: not-allowed;
+}
+
+.error {
+	color: #c62828;
+}
+
+.helper {
+	margin: 0.16rem 0;
+	color: #334155;
+}
+
+.message {
+	margin: 0.64rem 0 0;
+	color: #1a7f37;
+}

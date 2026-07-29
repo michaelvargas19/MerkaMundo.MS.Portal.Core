@@ -1,13 +1,26 @@
 import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { AuthService } from './auth';
 
-import { Catalog } from './catalog';
+import { CatalogService } from './catalog';
 
-describe('Catalog', () => {
-  let service: Catalog;
+describe('CatalogService', () => {
+  let service: CatalogService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(Catalog);
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [
+        CatalogService,
+        {
+          provide: AuthService,
+          useValue: {
+            getToken: () => 'token',
+          },
+        },
+      ],
+    });
+    service = TestBed.inject(CatalogService);
   });
 
   it('should be created', () => {

@@ -1,4 +1,5 @@
 var environmentName = 'prod';
+//var URL_CORE = 'https://localhost:44333';
 var URL_CORE = 'https://192.168.0.5:15000';
 var VERSION = '0.1.0';
 var DELIVERY = '';

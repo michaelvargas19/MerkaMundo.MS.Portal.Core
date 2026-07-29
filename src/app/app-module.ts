@@ -11,23 +11,14 @@ import localeEs from '@angular/common/locales/es';
 registerLocaleData(localeEs, 'es');
 
 @NgModule({
-  declarations: [
-    App
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    SharedModule,
-    SalesModule,
-  ],
+  declarations: [App],
+  imports: [BrowserModule, AppRoutingModule, SharedModule, SalesModule],
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(
-      withFetch()
-    ),
-    { provide: LOCALE_ID, useValue: 'es' }
+    provideHttpClient(withFetch()),
+    { provide: LOCALE_ID, useValue: 'es' },
   ],
-  bootstrap: [App]
+  bootstrap: [App],
 })
-export class AppModule { }
+export class AppModule {}

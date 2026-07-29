@@ -1,0 +1,148 @@
+<section class="add-product-card">
+	<h3>Agregar Producto</h3>
+
+	<form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="add-product-form">
+		<label for="barcode">Codigo de barras</label>
+		<input
+			#barcodeInput
+			id="barcode"
+			type="text"
+			formControlName="barcode"
+			[class.field-invalid]="isInvalidControl('barcode')"
+			placeholder="Escanea o ingresa el codigo"
+			(input)="onBarcodeInputChanged()"
+			(blur)="onBarcodeBlur()" />
+
+		<small class="error" *ngIf="productForm.get('barcode')?.invalid && productForm.get('barcode')?.touched">
+			Debes ingresar un codigo valido.
+		</small>
+
+		<div class="detected-card" *ngIf="detectedProduct !== null">
+			<strong>Producto encontrado:</strong>
+			<span>{{ detectedProduct.Name || 'Sin nombre' }}</span>
+			<small>BarCode: {{ detectedProduct.BarCode }}</small>
+		</div>
+
+		<div class="new-product-option" *ngIf="showNewProductOption">
+			<p>No existe un producto con este barCode. ¿Agregar como nuevo producto en el catalogo?</p>
+			<div class="option-buttons">
+				<button type="button" (click)="selectAddAsNewProduct(true)" [class.selected]="addAsNewProduct === true">Si</button>
+				<button type="button" (click)="selectAddAsNewProduct(false)" [class.selected]="addAsNewProduct === false">No</button>
+			</div>
+		</div>
+
+		<div class="new-product-fields" *ngIf="addAsNewProduct === true">
+			<div class="field-row">
+				<div class="field-col">
+					<label for="name">Nombre del producto</label>
+					<input
+						#nameInput
+						id="name"
+						type="text"
+						formControlName="name"
+						[class.field-invalid]="isInvalidControl('name')"
+						/>
+				</div>
+
+				<div class="field-col">
+					<label for="description">Descripción</label>
+					<input
+						id="description"
+						type="text"
+						formControlName="description"
+						[class.field-invalid]="isInvalidControl('description')"
+						/>
+				</div>
+			</div>
+
+			<div class="field-row">
+				<div class="field-col">
+					<label for="unitOfMeasure">Unidad de medida</label>
+					<input
+						id="unitOfMeasure"
+						type="text"
+						formControlName="unitOfMeasure"
+						[class.field-invalid]="isInvalidControl('unitOfMeasure')"
+						/>
+				</div>
+
+				<div class="field-col">
+					<label for="basePrice">Precio base</label>
+					<input
+						#basePriceInput
+						id="basePrice"
+						type="number"
+						min="0"
+						step="0.01"
+						formControlName="basePrice"
+						[class.field-invalid]="isInvalidControl('basePrice')"
+						[class.field-updated]="isBasePriceChanged()"
+						(input)="onBasePriceChanged()"
+						 />
+				</div>
+			</div>
+			<small class="error" *ngIf="productForm.get('basePrice')?.invalid && productForm.get('basePrice')?.touched">
+				El precio base es obligatorio.
+			</small>
+
+			<small class="error" *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched">
+				El nombre es requerido para crear producto nuevo.
+			</small>
+
+			<p class="helper" *ngIf="isLoadingCustomerTypes">Cargando tipos de cliente...</p>
+			<p class="error" *ngIf="!isLoadingCustomerTypes && customerTypes.length === 0">
+				No se encontraron tipos de cliente para capturar precios.
+			</p>
+
+			<div class="price-grid" *ngIf="customerTypes.length > 0">
+				<div class="price-card" [class.price-card-updated]="isProductPriceChanged(customerType.id)" *ngFor="let customerType of customerTypes">
+					<strong>{{ customerType.label }}</strong>
+
+					<label [for]="'gain-' + customerType.id">Porcentaje de ganancia (%)</label>
+					<input
+						[id]="'gain-' + customerType.id"
+						type="number"
+						min="0"
+						step="0.01"
+						[formControlName]="'gainPercentageType' + customerType.id"
+						[class.field-invalid]="isInvalidControl('gainPercentageType' + customerType.id)"
+						[class.field-updated]="isGainFieldChanged(customerType.id)"
+						(input)="onGainPercentageChanged(customerType.id)"
+						placeholder="0" />
+
+					<label [for]="'sale-price-' + customerType.id">Valor de venta</label>
+					<input
+						[id]="'sale-price-' + customerType.id"
+						type="number"
+						min="0"
+						step="0.01"
+						[formControlName]="'salePriceType' + customerType.id"
+						[class.field-invalid]="isInvalidControl('salePriceType' + customerType.id)"
+						[class.field-updated]="isSaleFieldChanged(customerType.id)"
+						(input)="onSalePriceChanged(customerType.id)"
+						placeholder="0" />
+
+					<small
+						class="error"
+						*ngIf="(productForm.get('gainPercentageType' + customerType.id)?.invalid && productForm.get('gainPercentageType' + customerType.id)?.touched) || (productForm.get('salePriceType' + customerType.id)?.invalid && productForm.get('salePriceType' + customerType.id)?.touched)">
+						Porcentaje de ganancia y valor de venta son obligatorios para {{ customerType.label }}.
+					</small>
+				</div>
+			</div>
+		</div>
+
+		<button type="submit" [disabled]="isLoading" *ngIf="!isDetectedProductEditionMode">
+			{{ isLoading ? 'Buscando...' : 'Agregar producto' }}
+		</button>
+
+		<button type="button" [disabled]="isLoading" *ngIf="isDetectedProductEditionMode" (click)="onSaveDetectedProductChanges()">
+			{{ isLoading ? 'Guardando...' : 'Guardar cambios' }}
+		</button>
+
+		<button type="button" class="cancel-button" [disabled]="isLoading" *ngIf="addAsNewProduct === true" (click)="onCancelProductForm()">
+			Cancelar
+		</button>
+	</form>
+
+	<p class="message" [class.error]="hasError" *ngIf="message !== null">{{ message }}</p>
+</section>

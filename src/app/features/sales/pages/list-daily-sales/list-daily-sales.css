@@ -31,13 +31,18 @@
 
 .date-badge {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   gap: 8px;
   background-color: #eef2f5;
   padding: 8px 16px;
   border-radius: 20px;
   font-weight: 500;
   color: #34495e;
+}
+
+.export-excel-btn {
+  width: 100%;
 }
 
 /* Disposición Flexbox / Grid para las 2 columnas */
@@ -95,6 +100,24 @@
 
 table {
   width: 100%;
+}
+
+.actions-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.confirmed-chip {
+  background-color: #e8f5e9;
+  color: #1b5e20;
+  border: 1px solid #a5d6a7;
+}
+
+.pending-chip {
+  background-color: #fff3e0;
+  color: #e65100;
+  border: 1px solid #ffcc80;
 }
 
 /* Panel Derecho de Resumen */

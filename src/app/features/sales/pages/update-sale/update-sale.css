@@ -1,0 +1,31 @@
+.product-name-cell {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.item-mark {
+	border-radius: 6px;
+	padding: 2px 6px;
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.02rem;
+	text-transform: uppercase;
+}
+
+.modified-mark {
+	background-color: #fff4e5;
+	color: #9a5b00;
+	border: 1px solid #ffd59e;
+}
+
+.new-mark {
+	background-color: #e8f5e9;
+	color: #1b5e20;
+	border: 1px solid #a5d6a7;
+}
+
+.modified-row {
+	background-color: #fcfbf4;
+}

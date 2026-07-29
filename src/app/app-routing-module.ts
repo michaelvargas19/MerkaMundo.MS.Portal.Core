@@ -16,7 +16,13 @@ const routes: Routes = [
       { path: 'login', component: Login },
       { path: 'sales', component: Sales, canActivate: [authGuard] },
       { path: 'createSale', component: CreateSale, canActivate: [authGuard] },
-      { path: 'updateSale', component: UpdateSale, canActivate: [authGuard] },
+      {
+        path: 'catalog/:id',
+        canActivate: [authGuard],
+        loadChildren: () => import('./features/catalogs/catalogs-module').then(m => m.CatalogsModule),
+      },
+      //{ path: 'updateSale', redirectTo: 'sales', pathMatch: 'full' },
+      { path: 'updateSale/:id', component: UpdateSale },
     ]
   },  
 

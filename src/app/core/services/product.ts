@@ -5,6 +5,7 @@ import { AuthService } from './auth';
 import { environment } from '../../../environments/environment';
 import { ResponseDTO } from '../../shared/model/common/http/response-dto';
 import { CatalogProductDto } from '../../shared/model/catalog/catalog-product-dto';
+import { CatalogProductPriceDto } from '../../shared/model/catalog/catalog-product-price-dto';
 
 
 @Injectable({
@@ -25,6 +26,30 @@ constructor(private authService: AuthService, private http: HttpClient) {}
         Authorization:'Bearer ' + this.authService.getToken()
       }
     });
+  }
+
+  updateProduct(product: unknown): Observable<ResponseDTO<CatalogProductDto>> {
+    return this.http.put<ResponseDTO<CatalogProductDto>>(
+      this.URL_CORE + '/api/product/update',
+      product,
+      {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken(),
+        },
+      }
+    );
+  }
+
+  updateProductPrice(price: unknown): Observable<ResponseDTO<CatalogProductPriceDto>> {
+    return this.http.put<ResponseDTO<CatalogProductPriceDto>>(
+      this.URL_CORE + '/api/product-price/update',
+      price,
+      {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken(),
+        },
+      }
+    );
   }
   
 }

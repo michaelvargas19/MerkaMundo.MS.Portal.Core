@@ -1,5 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild, inject, OnInit } from '@angular/core';
 import { ProductService } from '../../../../core/services/product';
+import { SaleService } from '../../../../core/services/sale';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SaleDetailDto } from '../../../../shared/model/sales/sale-detail-dto';
@@ -8,6 +9,7 @@ import { Router } from '@angular/router';
 import { ResponseDTO } from '../../../../shared/model/common/http/response-dto';
 import { CatalogProductDto } from '../../../../shared/model/catalog/catalog-product-dto';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MatTable } from '@angular/material/table';
 
 
 @Component({
@@ -16,7 +18,10 @@ import { HttpErrorResponse } from '@angular/common/http';
   templateUrl: './create-sale.html',
   styleUrl: './create-sale.css',
 })
-export class CreateSale implements OnInit{
+export class CreateSale implements OnInit, AfterViewInit {
+
+  @ViewChild('barcodeInput') private barcodeInputRef?: ElementRef<HTMLInputElement>;
+    @ViewChild('cartTable') private cartTableRef?: MatTable<SaleDetailDto>;
   
   public currentDate: Date = new Date();
 
@@ -36,10 +41,11 @@ export class CreateSale implements OnInit{
   saleForm!: FormGroup;
   filterForm!: FormGroup;
   cartItems: SaleDetailDto[] = [];
-  applyTaxToAll = true;
+  applyTaxToAll = false;
   applyTaxIndeterminate = false;
+  allowUnitPriceEdit = false;
 
-  displayedColumns: string[] = ['barcode', 'productName', 'productType', 'itemCustomerType', 'unitPrice', 'quantity', 'subtotal', 'itemTax', 'applyTax', 'actions'];
+  displayedColumns: string[] = ['barcode', 'productName', 'productType', 'itemCustomerType', 'unitPrice', 'quantity', 'subtotal', 'actions'];
 
   // Listas de selección
     productTypes = [
@@ -61,21 +67,25 @@ export class CreateSale implements OnInit{
     this.initForms();
   }
 
-  constructor(private productService: ProductService, private router: Router) {}
+  ngAfterViewInit(): void {
+    this.focusBarcodeInput();
+  }
+
+  constructor(private productService: ProductService, private saleService: SaleService, private router: Router) {}
 
   private initForms(): void {
     // Formulario de Búsqueda
     this.filterForm = this.fb.group({
-      barcode: ['9786289584271'],
+      barcode: [''],
       productType: ['ALL'],
       searchTerm: ['']
     });
 
     // Formulario Principal DTO
     this.saleForm = this.fb.group({
-      businessId: [1, [Validators.required]],
-      customerId: [1],
-      customerTypeId: [null],
+      businessId: [null],
+      customerId: [null],
+      customerTypeId: [1],
       deliveryTypeId: [1, [Validators.required]],
       paymentMethodId: [1, [Validators.required]],
       saleNumber: [{ value: 'VTA-AUTOGEN', disabled: true }],
@@ -88,8 +98,13 @@ export class CreateSale implements OnInit{
     });
 
     this.customerForm = this.fb.group({
-      customerTypeId: [null, [Validators.required]]
+      customerTypeId: [1, [Validators.required]]
     });
+
+    const defaultCustomerType = this.customerTypes.find(type => type.id === 1) || null;
+    this.selectedCustomer = defaultCustomerType
+      ? { id: defaultCustomerType.id, name: defaultCustomerType.label }
+      : null;
 
     // Recalcular montos al cambiar descuento
     this.saleForm.get('totalDiscount')?.valueChanges.subscribe(() => this.recalculateTotals());
@@ -160,6 +175,10 @@ export class CreateSale implements OnInit{
 
   
   updateUnitPrice(element: SaleDetailDto, newPrice: number | string): void {
+    if (!this.allowUnitPriceEdit) {
+      return;
+    }
+
     const price = Number(newPrice);
 
     if (isNaN(price) || price <= 0) {
@@ -207,7 +226,8 @@ export class CreateSale implements OnInit{
 
   get calculatedTotal(): number {
     const discount = this.saleForm.get('totalDiscount')?.value || 0;
-    return Math.max(0, this.calculatedSubtotal - discount);
+    const netTotal = Math.max(0, this.calculatedSubtotal - discount);
+    return this.roundToNearestFifty(netTotal);
   }
 
   get totalItemsCount(): number {
@@ -217,6 +237,48 @@ export class CreateSale implements OnInit{
   private recalculateTotals(): void {
     // Dispara la actualización visual en Angular
     this.cartItems = [...this.cartItems];
+      this.refreshCartTable();
+  }
+
+  private roundToNearestFifty(value: number): number {
+    return Math.ceil(Number(value || 0) / 50) * 50;
+  }
+
+  private normalizePercentage(value: number): number {
+    const normalized = value > 1 ? value / 100 : value;
+    return Number(Math.max(0, normalized).toFixed(4));
+  }
+
+  private buildSaleDetailsPayload(discountPercentage: number, taxPercentage: number): SaleDetailDto[] {
+    return this.cartItems.map(item => {
+      const detail = new SaleDetailDto();
+      detail.ProductId = item.ProductId;
+      detail.ProductPriceId = item.ProductPriceId;
+      detail.Barcode = item.Barcode;
+      detail.ProductName = item.ProductName;
+      detail.ProductType = item.ProductType;
+      detail.CustomerTypeId = item.CustomerTypeId;
+      detail.UnitPrice = item.UnitPrice;
+      detail.ProductPrices = item.ProductPrices;
+      detail.Quantity = item.Quantity;
+      detail.Subtotal = item.Subtotal;
+      detail.TaxAmount = item.TaxAmount;
+      detail.SubtotalWithoutTax = item.SubtotalWithoutTax;
+      detail.ApplyTax = item.ApplyTax;
+      detail.HasMissingCustomerTypePrice = item.HasMissingCustomerTypePrice;
+      detail.IsModified = item.IsModified;
+      detail.IsNew = item.IsNew;
+      detail.IsDeleted = item.IsDeleted;
+
+      const itemSubtotal = Number(item.Subtotal || 0);
+      const itemTax = Number(item.TaxAmount || 0);
+      detail.DiscountPercentage = discountPercentage;
+      detail.TaxPercentage = item.ApplyTax !== false ? taxPercentage : 0;
+      detail.TotalDiscount = Number((itemSubtotal * discountPercentage).toFixed(4));
+      detail.TotalTax = Number(itemTax.toFixed(4));
+
+      return detail;
+    });
   }
 
   private calculateItemAmounts(item: SaleDetailDto): void {
@@ -225,7 +287,7 @@ export class CreateSale implements OnInit{
     const taxRate = Number(this.saleForm.get('totalTaxRate')?.value || 0);
     const applyTax = item.ApplyTax !== false;
     const itemSubtotal = quantity * unitPrice;
-    const itemTax = applyTax && taxRate > 0 ? itemSubtotal * (taxRate / (1 + taxRate)) : 0;
+    const itemTax = applyTax && taxRate > 0 ? itemSubtotal * taxRate : 0;
 
     item.Subtotal = itemSubtotal;
     item.TaxAmount = itemTax;
@@ -243,6 +305,7 @@ export class CreateSale implements OnInit{
     }
 
     item.CustomerTypeId = customerTypeId;
+    item.ProductPriceId = Number(match.ProductPriceId || 0) || null;
     item.UnitPrice = match.Price;
     item.HasMissingCustomerTypePrice = false;
     this.calculateItemAmounts(item);
@@ -350,11 +413,12 @@ export class CreateSale implements OnInit{
     this.updateGeneralTaxToggleState();
     this.cartItems = [...this.cartItems];
     this.recalculateTotals();
+    this.clearAndFocusBarcodeInput();
   }
 
   private updateGeneralTaxToggleState(): void {
     if (this.cartItems.length === 0) {
-      this.applyTaxToAll = true;
+      this.applyTaxToAll = false;
       this.applyTaxIndeterminate = false;
       return;
     }
@@ -379,6 +443,7 @@ export class CreateSale implements OnInit{
 
 
   onSaveSale(): void {
+
     if (this.saleForm.invalid) {
       this.saleForm.markAllAsTouched();
       this.snackBar.open('Complete los campos obligatorios del formulario', 'Cerrar', { duration: 3000 });
@@ -391,6 +456,12 @@ export class CreateSale implements OnInit{
     }
 
     const formValues = this.saleForm.getRawValue();
+    const subtotal = this.calculatedSubtotal;
+    const totalDiscount = Math.max(0, Math.min(Number(formValues.totalDiscount || 0), subtotal));
+    const rawTaxRate = Number(this.saleForm.get('totalTaxRate')?.value || 0);
+    const taxPercentage = this.normalizePercentage(rawTaxRate);
+    const discountPercentage = subtotal > 0 ? this.normalizePercentage(totalDiscount / subtotal) : 0;
+    const saleDetailsPayload = this.buildSaleDetailsPayload(discountPercentage, taxPercentage);
 
     // Mapeo final al DTO de Backend
     const salePayload: SaleDto = {
@@ -404,27 +475,51 @@ export class CreateSale implements OnInit{
       SaleDate: formValues.saleDate,
       DeliveryDate: formValues.deliveryDate,
       Notes: formValues.notes,
-      Subtotal: this.calculatedSubtotal,
-      TotalDiscount: formValues.totalDiscount || 0,
-      TotalTax: this.calculatedTax,
+      Subtotal: subtotal,
       Total: this.calculatedTotal,
-      Details: this.cartItems
+      SaleDetails: saleDetailsPayload
     };
 
-    console.log('DTO a enviar al endpoint POST /api/Sales:', salePayload);
-    
-    this.snackBar.open('Venta registrada con éxito', 'Aceptar', { duration: 5000 });
-    this.onCancelSale();
+    //console.log('DTO a enviar al endpoint POST /api/Sales:', salePayload);
+
+    this.saleService.create(salePayload)
+      .subscribe(reps => {
+
+        var dto = reps.Data;
+
+        if (dto) {
+
+          this.snackBar.open('Venta registrada con éxito', 'Aceptar', { duration: 5000 });
+          this.onCancelSale();
+
+        }else{
+          //this.modal.modalGeneral("Inicio de Sesión", reps.Message, "error");
+        }        
+
+      }, error => {
+        debugger;
+        if (error.status==400){
+          //this.modal.modalGeneral("Inicio de Sesión", error.error.Message, "warning");  
+        }else{
+          //this.modal.modalGeneral("Inicio de Sesión", error.error.Message, "error");  
+        }
+
+        if (error.status==401){
+          this.router.navigate(['/login']);
+        }
+
+      });
+
   }
 
   onCancelSale(): void {
     this.cartItems = [];
-    this.applyTaxToAll = true;
+    this.applyTaxToAll = false;
     this.applyTaxIndeterminate = false;
     this.filterForm.reset({ productType: 'ALL', barcode: '', searchTerm: '' });
     this.saleForm.reset({
-      businessId: 1,
-      customerId: 1,
+      customerId: null,
+      customerTypeId: 1,
       deliveryTypeId: 1,
       paymentMethodId: 1,
       saleNumber: 'VTA-AUTOGEN',
@@ -435,6 +530,13 @@ export class CreateSale implements OnInit{
       totalDiscount: 0,
       totalTaxRate: 0.19
     });
+
+    this.customerForm.reset({ customerTypeId: 1 });
+    const defaultCustomerType = this.customerTypes.find(type => type.id === 1) || null;
+    this.selectedCustomer = defaultCustomerType
+      ? { id: defaultCustomerType.id, name: defaultCustomerType.label }
+      : null;
+    this.focusBarcodeInput();
   }
 
 
@@ -443,7 +545,8 @@ export class CreateSale implements OnInit{
     const found = this.customerTypes.find(t => t.id === typeId);
     if (found) {
       this.selectedCustomer = { id: found.id, name: found.label };
-      this.saleForm.get('customerId')?.setValue(typeId);
+      this.saleForm.get('customerTypeId')?.setValue(typeId, { emitEvent: false });
+      this.saleForm.get('customerId')?.setValue(null);
 
       let missingPrices = 0;
       this.cartItems.forEach(item => {
@@ -464,6 +567,25 @@ export class CreateSale implements OnInit{
   removeCustomer(): void {
     this.selectedCustomer = null;
     this.saleForm.get('customerId')?.setValue(null);
+  }
+
+  private focusBarcodeInput(): void {
+    setTimeout(() => {
+      this.barcodeInputRef?.nativeElement?.focus();
+    }, 0);
+  }
+
+  private clearAndFocusBarcodeInput(): void {
+    this.filterForm.get('barcode')?.setValue('', { emitEvent: false });
+    this.filterForm.get('barcode')?.markAsPristine();
+    this.filterForm.get('barcode')?.markAsUntouched();
+    this.focusBarcodeInput();
+  }
+
+  private refreshCartTable(): void {
+    setTimeout(() => {
+      this.cartTableRef?.renderRows();
+    }, 0);
   }
   
 }

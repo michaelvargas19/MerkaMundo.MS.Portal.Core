@@ -19,7 +19,7 @@
           
           <div class="client-select-wrapper">
             
-            <form [formGroup]="customerForm" class="sale-header-grid" style="grid-template-columns: auto;">
+            <form [formGroup]="customerForm" class="sale-header-grid header-customer-form">
               <mat-form-field appearance="outline" class="client-compact-select">
                 <mat-label>Tipo de Cliente</mat-label>
                 <mat-select formControlName="customerTypeId" (selectionChange)="onCustomerTypeChange($event.value)">
@@ -29,11 +29,6 @@
                 </mat-select>
                 <mat-icon matSuffix color="action">person_search</mat-icon>
               </mat-form-field>
-
-              <label class="tax-toggle" style="display:flex; align-items:center; gap:8px; margin-top:6px;">
-                <input type="checkbox" [checked]="applyTaxToAll" [indeterminate]="applyTaxIndeterminate" (change)="onGeneralApplyTaxChange($any($event.target).checked)" />
-                <span>Calcular IVA en todos los ítems</span>
-              </label>
             </form>
 
           </div>    
@@ -55,28 +50,11 @@
         <h3>Búsqueda y Filtros de Productos</h3>
         <form [formGroup]="filterForm" (ngSubmit)="onSearchProducts()" class="filter-form-grid">
   
-  <!-- Fila 1: Código de Barras (Línea completa y prominente) -->
-  <mat-form-field appearance="outline" class="full-width-field barcode-field">
-    <mat-label>Código de Barras</mat-label>
-    <input matInput formControlName="barcode" placeholder="Escanear o digitar código de barras..." autofocus (keyup.enter)="onSearchByBarCode()" (blur)="onSearchByBarCode()" />
-    <mat-icon matSuffix>qr_code_scanner</mat-icon>
-  </mat-form-field>
-
-  <!-- Fila 2: Filtros complementarios y botón de búsqueda -->
-  <div class="secondary-filters-row">
-    <mat-form-field appearance="outline" class="filter-field">
-      <mat-label>Tipo de Producto</mat-label>
-      <mat-select formControlName="productType">
-        @for (type of productTypes; track type.value) {
-          <mat-option [value]="type.value">{{ type.label }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="filter-field grow-field">
-      <mat-label>Nombre o Descripción</mat-label>
-      <input matInput formControlName="searchTerm" placeholder="Ej: Arroz 1kg, Aceite..." />
-      <mat-icon matSuffix>search</mat-icon>
+  <div class="barcode-search-row">
+    <mat-form-field appearance="outline" class="full-width-field barcode-field">
+      <mat-label>Código de Barras</mat-label>
+      <input #barcodeInput matInput formControlName="barcode" placeholder="Escanear o digitar código de barras..." autofocus (keyup.enter)="onSearchByBarCode()" (blur)="onSearchByBarCode()" />
+      <mat-icon matSuffix>qr_code_scanner</mat-icon>
     </mat-form-field>
 
     <div class="search-button-container">
@@ -94,7 +72,7 @@
         <h3>Productos Agregados ({{ totalItemsCount }})</h3>
         
         <div class="table-container mat-elevation-z1">
-          <table mat-table [dataSource]="cartItems">
+          <table #cartTable mat-table [dataSource]="cartItems">
 
             <ng-container matColumnDef="barcode">
               <th mat-header-cell *matHeaderCellDef> Cód. Barras </th>
@@ -114,7 +92,7 @@
             <ng-container matColumnDef="itemCustomerType">
               <th mat-header-cell *matHeaderCellDef> Cliente Ítem </th>
               <td mat-cell *matCellDef="let element">
-                <mat-form-field appearance="outline" style="width: 160px; margin: 4px 0;">
+                <mat-form-field appearance="outline" class="item-customer-type-field">
                   <mat-select [value]="element.CustomerTypeId" (selectionChange)="onItemCustomerTypeChange(element, $event.value)">
                     <mat-option *ngFor="let type of customerTypes" [value]="type.id">
                       {{ type.label }}
@@ -133,6 +111,7 @@
                     class="unitPrice-input"
                     [class.unit-price-warning]="element.HasMissingCustomerTypePrice === true"
                     [value]="element.UnitPrice" 
+                    [disabled]="!allowUnitPriceEdit"
                     min="1"
                     (change)="updateUnitPrice(element, $any($event.target).value)" 
                   />
@@ -164,27 +143,10 @@
             <ng-container matColumnDef="subtotal">
               <th mat-header-cell *matHeaderCellDef> Subtotal </th>
               <td mat-cell *matCellDef="let element">
-                <strong>{{ element.Subtotal | currency:'COP':'symbol':'1.0-0' }}</strong>
+                <strong>{{ element.Subtotal | currency:'COP':'$':'1.0-0' }}</strong>
               </td>
             </ng-container>
 
-            <ng-container matColumnDef="itemTax">
-              <th mat-header-cell *matHeaderCellDef> IVA Ítem </th>
-              <td mat-cell *matCellDef="let element">
-                {{ element.TaxAmount | currency:'COP':'symbol':'1.0-0' }}
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="applyTax">
-              <th mat-header-cell *matHeaderCellDef> Aplica IVA </th>
-              <td mat-cell *matCellDef="let element" class="text-center">
-                <input
-                  type="checkbox"
-                  [checked]="element.ApplyTax !== false"
-                  (change)="onItemApplyTaxChange(element, $any($event.target).checked)"
-                />
-              </td>
-            </ng-container>
 
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef> </th>
@@ -213,12 +175,12 @@
         <h3>Datos de la Transacción</h3>
         <form [formGroup]="saleForm" class="sale-header-grid">
           
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" class="transaction-compact-field">
             <mat-label>Nº Venta</mat-label>
             <input matInput formControlName="saleNumber" />
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" class="transaction-compact-field">
             <mat-label>Método de Pago</mat-label>
             <mat-select formControlName="paymentMethodId">
               @for (pm of paymentMethods; track pm.id) {
@@ -227,7 +189,7 @@
             </mat-select>
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" class="transaction-compact-field">
             <mat-label>Tipo de Entrega</mat-label>
             <mat-select formControlName="deliveryTypeId" (selectionChange)="onDeliveryTypeChange($event.value)">
               @for (dt of deliveryTypes; track dt.id) {
@@ -236,21 +198,21 @@
             </mat-select>
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" class="transaction-compact-field">
             <mat-label>Fecha de Venta</mat-label>
-            <input matInput [matDatepicker]="pickerSale" formControlName="saleDate">
-            <mat-datepicker-toggle matIconSuffix [for]="pickerSale"></mat-datepicker-toggle>
-            <mat-datepicker #pickerSale></mat-datepicker>
+            <input matInput [matDatepicker]="pickerSale" formControlName="saleDate" readonly>
+            <mat-datepicker-toggle matIconSuffix [for]="pickerSale" [disabled]="true"></mat-datepicker-toggle>
+            <mat-datepicker #pickerSale [disabled]="true"></mat-datepicker>
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" class="transaction-compact-field">
             <mat-label>Fecha Estimada de Entrega</mat-label>
             <input matInput [matDatepicker]="pickerDelivery" formControlName="deliveryDate">
             <mat-datepicker-toggle matIconSuffix [for]="pickerDelivery"></mat-datepicker-toggle>
             <mat-datepicker #pickerDelivery></mat-datepicker>
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" class="transaction-compact-field">
             <mat-label>Descuento ($)</mat-label>
             <input matInput type="number" formControlName="totalDiscount" min="0" />
             <span matPrefix>$&nbsp;</span>
@@ -263,23 +225,6 @@
           </mat-form-field>
 
         </form>
-      </section>
-
-      <!-- Zona 4: Acciones Finales -->
-      <section class="summary-card checkout-footer">
-        <div class="totals-display">
-          <span class="total-label">Total Venta:</span>
-          <span class="total-amount">{{ calculatedTotal | currency:'COP':'symbol':'1.0-0' }}</span>
-        </div>
-
-        <div class="buttons-group">
-          <button mat-stroked-button color="warn" type="button" (click)="onCancelSale()" [disabled]="cartItems.length === 0">
-            <mat-icon>clear</mat-icon> Cancelar
-          </button>
-          <button mat-raised-button color="primary" type="button" (click)="onSaveSale()" [disabled]="cartItems.length === 0">
-            <mat-icon>check_circle</mat-icon> Guardar Venta
-          </button>
-        </div>
       </section>
 
     </div>
@@ -295,27 +240,7 @@
           </div>
           <div class="metric-data">
             <span class="label">Subtotal (IVA incluido)</span>
-            <span class="value">{{ calculatedSubtotal | currency:'COP':'symbol':'1.0-0' }}</span>
-          </div>
-        </div>
-
-        <div class="metric-item">
-          <div class="metric-icon delivery-icon">
-            <mat-icon>local_offer</mat-icon>
-          </div>
-          <div class="metric-data">
-            <span class="label">Descuento Aplicado</span>
-            <span class="value">{{ (saleForm.get('totalDiscount')?.value || 0) | currency:'COP':'symbol':'1.0-0' }}</span>
-          </div>
-        </div>
-
-        <div class="metric-item">
-          <div class="metric-icon delivery-icon">
-            <mat-icon>account_balance</mat-icon>
-          </div>
-          <div class="metric-data">
-            <span class="label">IVA incluido en precios</span>
-            <span class="value">{{ calculatedTax | currency:'COP':'symbol':'1.0-0' }}</span>
+            <span class="value">{{ calculatedSubtotal | currency:'COP':'$':'1.0-0' }}</span>
           </div>
         </div>
 
@@ -325,9 +250,25 @@
           </div>
           <div class="metric-data">
             <span class="label">Total Neto</span>
-            <span class="value">{{ calculatedTotal | currency:'COP':'symbol':'1.0-0' }}</span>
+            <span class="value">{{ calculatedTotal | currency:'COP':'$':'1.0-0' }}</span>
           </div>
         </div>
+
+        <section class="summary-card checkout-footer">
+          <div class="totals-display">
+            <span class="total-label">Total Venta:</span>
+            <span class="total-amount">{{ calculatedTotal | currency:'COP':'$':'1.0-0' }}</span>
+          </div>
+
+          <div class="buttons-group">
+            <button mat-stroked-button color="warn" type="button" class="cancel-sale-btn" (click)="onCancelSale()" [disabled]="cartItems.length === 0">
+              <mat-icon>clear</mat-icon> Cancelar
+            </button>
+            <button mat-raised-button color="primary" type="button" class="save-sale-btn" (click)="onSaveSale()" [disabled]="cartItems.length === 0">
+              <mat-icon>check_circle</mat-icon> Guardar Venta
+            </button>
+          </div>
+        </section>
 
       </div>
     </aside>

@@ -1,0 +1,51 @@
+<section class="products-card">
+	<h3>Productos del Catalogo</h3>
+
+	<div class="table-wrapper" *ngIf="products.length > 0; else emptyState">
+		<table>
+			<thead>
+				<tr>
+					<th>Producto</th>
+					<th>Codigo de barras</th>
+					<th>SKU</th>
+					<th>Unidad</th>
+					<th>Precio base</th>
+					<th>Estado</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let product of products">
+					<td>{{ product.Name }}</td>
+					<td>{{ product.BarCode || '-' }}</td>
+					<td>{{ product.SKUCode || '-' }}</td>
+					<td>{{ product.UnitOfMeasure || '-' }}</td>
+					<td>{{ getBasePrice(product) | currency:'COP':'$':'1.0-0' }}</td>
+					<td>
+						<span class="status" [class.inactive]="!isProductActive(product)">
+							{{ getProductStatusLabel(product) }}
+						</span>
+					</td>
+					<td>
+						<button type="button" (click)="removeProduct(product)">Quitar</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div class="pagination-footer" *ngIf="totalItems > 0">
+		<span class="page-summary">
+			Mostrando {{ fromItem }} - {{ toItem }} de {{ totalItems }} productos
+		</span>
+		<div class="page-controls">
+			<button type="button" (click)="onPreviousPage()" [disabled]="pageNumber <= 1 || isLoading">Anterior</button>
+			<span>Pagina {{ pageNumber }} de {{ totalPages }}</span>
+			<button type="button" (click)="onNextPage()" [disabled]="pageNumber >= totalPages || isLoading">Siguiente</button>
+		</div>
+	</div>
+
+	<ng-template #emptyState>
+		<p class="empty">Aun no hay productos asociados al catalogo.</p>
+	</ng-template>
+</section>

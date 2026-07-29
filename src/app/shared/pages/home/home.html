@@ -1,1 +1,56 @@
-<p>home works!</p>
+<main class="home-shell">
+	<section class="hero">
+		<div class="hero-text">
+			<p class="kicker">MerkaMundo Portal</p>
+			<h1>Bienvenido al panel principal</h1>
+			<p class="lead">
+				Gestiona ventas y productos desde un solo lugar.
+				Accede rapido a los modulos mas usados para tu operacion diaria.
+			</p>
+			<div class="hero-actions">
+				<a class="btn btn-primary" routerLink="/createSale">Crear venta</a>
+				<a class="btn btn-outline" routerLink="/sales">Consultar ventas</a>
+			</div>
+		</div>
+
+		<div class="hero-stats" aria-label="Resumen rapido">
+			<article class="stat-card">
+				<h3>Flujo rapido</h3>
+				<p>Registra ventas en pocos pasos y con foco en productividad.</p>
+			</article>
+			<article class="stat-card">
+				<h3>Control diario</h3>
+				<p>Consulta historicos y movimientos para monitorear resultados.</p>
+			</article>
+		</div>
+	</section>
+
+	<section class="quick-links" aria-label="Accesos principales">
+		<a class="link-card sales-create" routerLink="/createSale">
+			<div class="link-content">
+				<p class="link-eyebrow">Ventas</p>
+				<h2>Crear venta</h2>
+				<p>Registra una nueva venta con busqueda por codigo de barras.</p>
+			</div>
+			<span class="link-cta">Ir ahora</span>
+		</a>
+
+		<a class="link-card sales-list" routerLink="/sales">
+			<div class="link-content">
+				<p class="link-eyebrow">Analitica</p>
+				<h2>Consultar ventas</h2>
+				<p>Visualiza ventas registradas, filtra y revisa el detalle.</p>
+			</div>
+			<span class="link-cta">Abrir modulo</span>
+		</a>
+
+		<a class="link-card catalog" routerLink="/catalog/1">
+			<div class="link-content">
+				<p class="link-eyebrow">Catalogo</p>
+				<h2>Consultar catalogo de productos</h2>
+				<p>Explora y administra el catalogo disponible en el sistema.</p>
+			</div>
+			<span class="link-cta">Ver productos</span>
+		</a>
+	</section>
+</main>

@@ -6,6 +6,7 @@
   <div class="nav-links" >
     <div class="nav-links" *ngIf="isAuth$ | async">
       <a mat-button routerLink="/home" routerLinkActive="active-link">Inicio</a>
+      <a mat-button routerLink="/catalog/1" routerLinkActive="active-link">Catalogo</a>
       <a mat-button routerLink="/createSale" routerLinkActive="active-link">Crear venta</a>
       <a mat-button routerLink="/sales" routerLinkActive="active-link">Ventas</a>
       <button mat-raised-button color="warn" (click)="onLogout()">Cerrar Sesión</button>

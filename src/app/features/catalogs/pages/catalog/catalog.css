@@ -1,0 +1,58 @@
+.catalog-page {
+	display: grid;
+	gap: 1rem;
+	padding: 1.25rem;
+}
+
+.catalog-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 1rem;
+}
+
+.catalog-header h2 {
+	margin: 0;
+}
+
+.catalog-header p {
+	margin: 0.4rem 0 0;
+	color: #58606b;
+}
+
+.catalog-status {
+	background: #e9f7ef;
+	color: #1a7f37;
+	border: 1px solid #b6e3c9;
+	border-radius: 999px;
+	padding: 0.35rem 0.8rem;
+	font-weight: 600;
+}
+
+.catalog-metrics {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+	gap: 0.75rem;
+}
+
+.metric-card {
+	background: #ffffff;
+	border: 1px solid #d8dee6;
+	border-radius: 10px;
+	padding: 0.75rem;
+}
+
+.metric-label {
+	display: block;
+	color: #58606b;
+	font-size: 0.82rem;
+}
+
+.message {
+	margin: 0;
+	color: #1a7f37;
+}
+
+.error {
+	color: #c62828;
+}

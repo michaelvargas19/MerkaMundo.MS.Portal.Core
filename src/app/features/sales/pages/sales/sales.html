@@ -1,15 +1,10 @@
 <div class="sales-dashboard-container">
   
-  <div>
-    <h2>Panel de Control de Ventas</h2>
-    <p class="subtitle">Gestión y resumen operativo diario</p>
-  </div>
-
   <div class="dashboard-content">
     
     <!-- COLUMNA IZQUIERDA: Tabla -->
     <main class="main-panel">
-      <app-list-daily-sales [todaySales]="todaySales"> </app-list-daily-sales>
+      <app-list-daily-sales [todaySales]="todaySales" (salesLoaded)="onSalesLoaded($event)"> </app-list-daily-sales>
     </main>
 
     <!-- COLUMNA DERECHA: Resumen de Ventas del Día -->
@@ -23,7 +18,7 @@
           </div>
           <div class="metric-data">
             <span class="label">Total Ventas</span>
-            <span class="value">{{ totalSalesAmount | currency:'COP':'symbol':'1.0-0' }}</span>
+            <span class="value">{{ totalSalesAmount | currency:'COP':'$':'1.0-0' }}</span>
           </div>
         </div>
 
@@ -48,6 +43,66 @@
           <div class="metric-data">
             <span class="label">Total Domicilios</span>
             <span class="value">{{ totalDeliveries }}</span>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="metric-item">
+          <div class="metric-icon delivery-icon">
+            <mat-icon>local_shipping</mat-icon>
+          </div>
+          <div class="metric-data">
+            <span class="label">Total dinero por domicilio</span>
+            <span class="value">{{ totalHomeDeliveryAmount | currency:'COP':'$':'1.0-0' }}</span>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="metric-item">
+          <div class="metric-icon count-icon">
+            <mat-icon>store</mat-icon>
+          </div>
+          <div class="metric-data">
+            <span class="label">Total dinero entrega en tienda</span>
+            <span class="value">{{ totalStoreDeliveryAmount | currency:'COP':'$':'1.0-0' }}</span>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="metric-item">
+          <div class="metric-icon count-icon">
+            <mat-icon>payments</mat-icon>
+          </div>
+          <div class="metric-data">
+            <span class="label">Total en efectivo</span>
+            <span class="value">{{ totalCashAmount | currency:'COP':'$':'1.0-0' }}</span>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="metric-item">
+          <div class="metric-icon delivery-icon">
+            <mat-icon>credit_card</mat-icon>
+          </div>
+          <div class="metric-data">
+            <span class="label">Total en tarjeta</span>
+            <span class="value">{{ totalCardAmount | currency:'COP':'$':'1.0-0' }}</span>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="metric-item">
+          <div class="metric-icon delivery-icon">
+            <mat-icon>swap_horiz</mat-icon>
+          </div>
+          <div class="metric-data">
+            <span class="label">Total en transferencia</span>
+            <span class="value">{{ totalTransferAmount | currency:'COP':'$':'1.0-0' }}</span>
           </div>
         </div>
 

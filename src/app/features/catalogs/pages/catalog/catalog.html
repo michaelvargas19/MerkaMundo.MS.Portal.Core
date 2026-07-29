@@ -1,0 +1,44 @@
+<section class="catalog-page">
+	<header class="catalog-header">
+		<div>
+			<h2>{{ catalogSummary?.Name || catalogDetail?.Name || '' }}</h2>
+			<p>{{ catalogDetail?.Description || '' }}</p>
+		</div>
+		<span class="catalog-status">{{ catalogDetail ? (catalogDetail.IsActive === false ? 'Inactivo' : 'Activo') : '' }}</span>
+	</header>
+
+	<div class="catalog-metrics">
+		<article class="metric-card">
+			<span class="metric-label">Catalogo</span>
+			<strong>#{{ catalogSummary?.CatalogId || catalogDetail?.CatalogId || selectedCatalogId || '' }}</strong>
+		</article>
+		<article class="metric-card">
+			<span class="metric-label">Productos</span>
+			<strong>{{ catalogSummary?.ProductCount ?? totalProducts }}</strong>
+		</article>
+		<article class="metric-card">
+			<span class="metric-label">Activos</span>
+			<strong>{{ activeProducts }}</strong>
+		</article>
+	</div>
+
+  <p class="message" [class.error]="hasError" *ngIf="viewMessage">{{ viewMessage }}</p>
+
+	<app-add-products
+		[catalogId]="selectedCatalogId"
+		(productAdded)="onProductAdded($event)"
+		(productEdited)="onProductEdited()"
+		(formModeChanged)="onProductFormModeChanged($event)">
+	</app-add-products>
+
+	<app-list-products
+		*ngIf="!isProductFormActive"
+		[products]="products"
+		[pageNumber]="pageNumber"
+		[pageSize]="pageSize"
+		[totalItems]="paginatorTotalItems"
+		[isLoading]="isLoadingCatalog"
+		(pageChanged)="onPageChanged($event)"
+		(productRemoved)="onProductRemoved($event)">
+	</app-list-products>
+</section>
