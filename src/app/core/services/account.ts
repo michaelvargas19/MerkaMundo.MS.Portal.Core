@@ -10,6 +10,7 @@ import { ResponseDTO } from '../../shared/model/common/http/response-dto';
 import { AccountDTO } from '../../shared/model/account/account-dto';
 import { AspNetUsersDTO } from '../../shared/model/account/asp-net-users-dto';
 import { AspNetUserRolesDTO } from '../../shared/model/account/asp-net-user-roles-dto';
+import { UpdateUserStateDTO } from '../../shared/model/account/update-user-state-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -51,7 +52,24 @@ constructor(private authService: AuthService, private http: HttpClient,
   register(user: AspNetUsersDTO): Observable<ResponseDTO<AccountDTO>> {
     return this.http.post<ResponseDTO<AccountDTO>>(
       this.URL_CORE + '/api/account/register',
-      user
+      user,
+      {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken(),
+        }
+      }
+    );
+  }
+
+  updateState(user: UpdateUserStateDTO): Observable<ResponseDTO<AccountDTO>> {
+    return this.http.patch<ResponseDTO<AccountDTO>>(
+      this.URL_CORE + '/api/account/user/state',
+      user,
+      {
+        headers: {
+          Authorization: 'Bearer ' + this.authService.getToken(),
+        }
+      }
     );
   }
 

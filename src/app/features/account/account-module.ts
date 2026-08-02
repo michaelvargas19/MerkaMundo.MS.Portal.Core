@@ -11,6 +11,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { Accounts } from './pages/accounts/accounts';
 import { CreateUser } from './pages/create-user/create-user';
@@ -31,6 +33,8 @@ import { UpdateUser } from './pages/update-user/update-user';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    MatSlideToggleModule,
+    MatSnackBarModule,
   ],
 })
 export class AccountModule {}
