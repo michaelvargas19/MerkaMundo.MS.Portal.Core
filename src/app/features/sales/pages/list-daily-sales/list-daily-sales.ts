@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Output, computed, inject, Input, OnInit, signal } from '@angular/core';
+import { Component, EventEmitter, Output, computed, inject, Input, OnInit, signal, ChangeDetectorRef, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SaleDto } from '../../../../shared/model/sales/sale-dto';
 import { Router } from '@angular/router';
@@ -45,12 +46,14 @@ export class ListDailySales implements OnInit {
 
 
     ngOnInit(): void {
+      if (!isPlatformBrowser(this.platformId)) return;
+
       this.initForms();
       this.listenDateChanges();
       this.loadSalesBySelectedDate();
     }
 
-    constructor(private router: Router, private saleService: SaleService) {}
+    constructor(private router: Router, private saleService: SaleService, private cdr: ChangeDetectorRef, @Inject(PLATFORM_ID) private platformId: object) {}
 
     private initForms(): void {
     // Formulario de Búsqueda
@@ -308,6 +311,7 @@ export class ListDailySales implements OnInit {
             this.todaySales = list;
             this.todaySalesSignal.set(list);
             this.salesLoaded.emit(list);
+            this.cdr.detectChanges();
           },
           error: (error: HttpErrorResponse) => {
             this.isLoadingSales = false;
@@ -322,6 +326,7 @@ export class ListDailySales implements OnInit {
             this.todaySales = [];
             this.todaySalesSignal.set([]);
             this.salesLoaded.emit([]);
+            this.cdr.detectChanges();
           }
         });
     }

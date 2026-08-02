@@ -13,8 +13,8 @@ import { AccountDTO } from '../../../../shared/model/account/account-dto';
   styleUrl: './login.css',
 })
 export class Login implements OnInit {
-  // Definición del objeto del formulario reactivo
   loginForm!: FormGroup;
+  showPassword = false;
 
   constructor(
     private fb: FormBuilder,

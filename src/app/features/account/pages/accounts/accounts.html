@@ -1,0 +1,62 @@
+<div class="accounts-container">
+  <div class="page-header">
+    <h2 class="page-title">Usuarios</h2>
+    <button mat-raised-button color="primary" (click)="createUser()">
+      <mat-icon>person_add</mat-icon> Nuevo usuario
+    </button>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-wrapper">
+    <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+  </div>
+
+  <mat-table *ngIf="!isLoading" [dataSource]="users" class="accounts-table mat-elevation-z2">
+
+    <ng-container matColumnDef="userName">
+      <mat-header-cell *matHeaderCellDef>Usuario</mat-header-cell>
+      <mat-cell *matCellDef="let u">{{ u.UserName }}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="fullName">
+      <mat-header-cell *matHeaderCellDef>Nombre completo</mat-header-cell>
+      <mat-cell *matCellDef="let u">{{ u.FirstName }} {{ u.LastName }}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <mat-header-cell *matHeaderCellDef>Correo</mat-header-cell>
+      <mat-cell *matCellDef="let u">{{ u.Email }}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="phone">
+      <mat-header-cell *matHeaderCellDef>Teléfono</mat-header-cell>
+      <mat-cell *matCellDef="let u">{{ u.PhoneNumber ?? '—' }}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="isActive">
+      <mat-header-cell *matHeaderCellDef>Activo</mat-header-cell>
+      <mat-cell *matCellDef="let u">
+        <mat-chip [color]="u.IsActive ? 'primary' : 'warn'" highlighted>
+          {{ u.IsActive ? 'Sí' : 'No' }}
+        </mat-chip>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="createdDate">
+      <mat-header-cell *matHeaderCellDef>Fecha creación</mat-header-cell>
+      <mat-cell *matCellDef="let u">{{ u.CreatedDate | date:'dd/MM/yyyy' }}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+      <mat-cell *matCellDef="let u">
+        <button mat-icon-button color="primary" (click)="editUser(u.Id)" matTooltip="Editar usuario">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+  </mat-table>
+</div>

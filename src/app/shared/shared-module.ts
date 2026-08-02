@@ -10,6 +10,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { Home } from './pages/home/home';
 import { ResponseDTO } from './model/common/http/response-dto';
@@ -25,8 +26,9 @@ import { AccountDTO } from './model/account/account-dto';
     MatIconModule,
     MatTableModule,
     MatChipsModule,
-    MatDividerModule
-  ],
+    MatDividerModule,
+    MatMenuModule,
+    ],
   exports: [Navbar],
 })
 export class SharedModule {}

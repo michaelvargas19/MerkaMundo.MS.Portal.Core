@@ -7,6 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 import { AuthRoutingModule } from './auth-routing-module';
 import { Login } from './pages/login/login';
@@ -20,7 +21,8 @@ import { Login } from './pages/login/login';
     MatCardModule,         // Permite usar <mat-card>
     MatFormFieldModule,    // Permite usar <mat-form-field>
     MatInputModule,        // Permite usar matInput
-    MatButtonModule        // Permite usar mat-raised-button
+    MatButtonModule,       // Permite usar mat-raised-button y mat-icon-button
+    MatIconModule          // Permite usar <mat-icon>
   ],
 })
 export class AuthModule {}

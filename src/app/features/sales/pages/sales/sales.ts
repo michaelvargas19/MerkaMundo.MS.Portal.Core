@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { SaleDto } from '../../../../shared/model/sales/sale-dto';
 import { Router } from '@angular/router';
 
@@ -16,10 +16,11 @@ export class Sales {
   // Datos simulados para el resumen del día
   public todaySales: SaleDto[] = [];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private cdr: ChangeDetectorRef) {}
 
   onSalesLoaded(sales: SaleDto[]): void {
     this.todaySales = sales || [];
+    this.cdr.detectChanges();
   }
 
   // Métrica 1: Total facturado hoy

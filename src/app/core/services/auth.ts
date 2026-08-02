@@ -27,7 +27,8 @@ export class AuthService {
     this.cookies.deleteAll();
     this.cookies.set("userId", dto.Id || "");
     this.cookies.set("userName", dto.UserName || "");
-    //this.cookies.set("roles", );
+    this.cookies.set("roles", dto.Roles.join(';') || "");
+    this.cookies.set("acciones", dto.Actions.map(a => a.Code || '').filter(c => c).join(';'));
     this.cookies.set("token", dto.JWT || ""); 
     this.loggedIn.next(this.hasToken());
   }
@@ -41,6 +42,7 @@ export class AuthService {
     this.cookies.set("userId", "");
     this.cookies.set("userName", "");
     this.cookies.set("roles", "");
+    this.cookies.set("acciones", "");
     this.cookies.set("token", ""); 
     this.loggedIn.next(this.hasToken());
   }

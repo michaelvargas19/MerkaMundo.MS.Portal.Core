@@ -26,7 +26,10 @@
 
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Contraseña</mat-label>
-            <input matInput type="password" formControlName="password" autocomplete="current-password">
+            <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" autocomplete="current-password">
+            <button mat-icon-button matSuffix type="button" (click)="showPassword = !showPassword" [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Ver contraseña'">
+              <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
             <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
               La contraseña es requerida.
             </mat-error>

@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CatalogService } from '../../../../core/services/catalog';
 import { ResponseDTO } from '../../../../shared/model/common/http/response-dto';
@@ -32,7 +33,8 @@ export class Catalog implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private router: Router,
     private catalogService: CatalogService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) private platformId: object
   ) {
     const initialCatalogId = this.resolveCatalogIdFromSnapshot();
     if (initialCatalogId > 0) {
@@ -42,14 +44,14 @@ export class Catalog implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     this.isProductFormActive = false;
     this.deferUiState(() => {
       this.loadFromRouteIfValid(this.resolveCatalogIdFromSnapshot());
     });
 
-    const paramMapSource = this.route.parent ? this.route.parent.paramMap : this.route.paramMap;
-
-    paramMapSource.subscribe(paramMap => {
+    this.route.paramMap.subscribe(paramMap => {
       const routeId = Number(paramMap.get('id') || 0);
       this.deferUiState(() => {
         this.loadFromRouteIfValid(routeId);
@@ -64,13 +66,7 @@ export class Catalog implements OnInit, AfterViewInit {
   }
 
   private resolveCatalogIdFromSnapshot(): number {
-    const ownId = Number(this.route.snapshot.paramMap.get('id') || 0);
-    if (ownId > 0) {
-      return ownId;
-    }
-
-    const parentId = Number(this.route.parent?.snapshot.paramMap.get('id') || 0);
-    return parentId;
+    return Number(this.route.snapshot.paramMap.get('id') || 0);
   }
 
   private loadFromRouteIfValid(routeId: number): void {
@@ -151,6 +147,7 @@ export class Catalog implements OnInit, AfterViewInit {
           this.totalProductsCount = Number(response.Count || 0);
         }
         this.isLoadingCatalog = false;
+        this.cdr.detectChanges();
       },
       error: (error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -163,6 +160,7 @@ export class Catalog implements OnInit, AfterViewInit {
         this.isLoadingCatalog = false;
         this.hasError = true;
         this.viewMessage = error.error?.Message || 'No fue posible cargar los productos del catalogo.';
+        this.cdr.detectChanges();
       },
     });
   }

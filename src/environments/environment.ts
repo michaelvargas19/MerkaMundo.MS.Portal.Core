@@ -1,6 +1,6 @@
 var environmentName = 'prod';
-//var URL_CORE = 'https://localhost:44333';
-var URL_CORE = 'https://192.168.0.5:15000';
+var URL_CORE = 'https://localhost:44333';
+//var URL_CORE = 'https://192.168.0.5:15000';
 var VERSION = require( 'package.json').version;
 var DELIVERY = require( 'package.json').deliveryDate;
 

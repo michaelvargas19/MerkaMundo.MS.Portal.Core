@@ -1,0 +1,39 @@
+.create-user-container {
+  display: flex;
+  justify-content: center;
+  padding: 32px 16px;
+}
+
+.create-user-card {
+  width: 100%;
+  max-width: 860px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.error-banner {
+  color: var(--mat-sys-error, #b00020);
+  font-size: 0.875rem;
+  margin-bottom: 12px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}

@@ -7,12 +7,14 @@ import { SharedModule } from './shared/shared-module';
 import { SalesModule } from './features/sales/sales-module';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
+import { AccountModule } from './features/account/account-module';
+import { CatalogsModule } from './features/catalogs/catalogs-module';
 
 registerLocaleData(localeEs, 'es');
 
 @NgModule({
   declarations: [App],
-  imports: [BrowserModule, AppRoutingModule, SharedModule, SalesModule],
+  imports: [BrowserModule, AppRoutingModule, SharedModule, SalesModule, AccountModule, CatalogsModule],
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideClientHydration(withEventReplay()),

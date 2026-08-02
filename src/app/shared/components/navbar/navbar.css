@@ -5,18 +5,52 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* El spacer empuja todo lo que esté a su derecha hacia el extremo opuesto */
 .spacer {
   flex: 1 1 auto;
 }
 
-.nav-links a {
-  margin-right: 10px;
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-/* Estilo opcional para resaltar la ruta activa en la que se encuentra el usuario */
+.nav-links a {
+  margin-right: 4px;
+}
+
 .active-link {
   background: rgba(255, 255, 255, 0.15);
   border-bottom: 2px solid white;
   border-radius: 4px 4px 0 0;
+}
+
+.user-menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+}
+
+.user-name {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menu-user-header {
+  font-weight: 600;
+  opacity: 1 !important;
+}
+
+.menu-roles-label {
+  font-size: 0.75rem;
+  opacity: 0.6 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.menu-role-item {
+  font-size: 0.875rem;
 }

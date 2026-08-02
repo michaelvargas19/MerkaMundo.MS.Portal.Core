@@ -1,0 +1,103 @@
+<div class="create-user-container">
+  <mat-card class="create-user-card">
+    <mat-card-header>
+      <mat-card-title>Registrar Usuario</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nombre de usuario</mat-label>
+            <input matInput formControlName="username" autocomplete="username">
+            <mat-error *ngIf="form.get('username')?.hasError('required')">Requerido.</mat-error>
+            <mat-error *ngIf="form.get('username')?.hasError('minlength')">Mínimo 4 caracteres.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Correo electrónico</mat-label>
+            <input matInput formControlName="email" type="email" autocomplete="email">
+            <mat-error *ngIf="form.get('email')?.hasError('required')">Requerido.</mat-error>
+            <mat-error *ngIf="form.get('email')?.hasError('email') || form.get('email')?.hasError('emailTld')">Ingresa un correo válido (ej. usuario@dominio.com).</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Contraseña</mat-label>
+            <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" autocomplete="new-password">
+            <button mat-icon-button matSuffix type="button" (click)="showPassword = !showPassword">
+              <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('password')?.hasError('required')">Requerido.</mat-error>
+            <mat-error *ngIf="form.get('password')?.hasError('minlength')">Mínimo 6 caracteres.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Confirmar contraseña</mat-label>
+            <input matInput [type]="showConfirm ? 'text' : 'password'" formControlName="confirmPassword" autocomplete="new-password">
+            <button mat-icon-button matSuffix type="button" (click)="showConfirm = !showConfirm">
+              <mat-icon>{{ showConfirm ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('confirmPassword')?.hasError('required')">Requerido.</mat-error>
+            <mat-error *ngIf="form.get('confirmPassword')?.hasError('passwordMismatch')">Las contraseñas no coinciden.</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Primer nombre</mat-label>
+            <input matInput formControlName="firstName">
+            <mat-error *ngIf="form.get('firstName')?.hasError('required')">Requerido.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Segundo nombre</mat-label>
+            <input matInput formControlName="middleName">
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Primer apellido</mat-label>
+            <input matInput formControlName="lastName">
+            <mat-error *ngIf="form.get('lastName')?.hasError('required')">Requerido.</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Segundo apellido</mat-label>
+            <input matInput formControlName="secondLastName">
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Celular</mat-label>
+            <input matInput formControlName="phone" type="tel">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Roles</mat-label>
+            <mat-select formControlName="roleIds" multiple>
+              <mat-option *ngIf="isLoadingRoles" disabled>Cargando roles…</mat-option>
+              <mat-option *ngFor="let role of roles" [value]="role.Id">
+                {{ role.Name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="errorMessage" class="error-banner">{{ errorMessage }}</div>
+
+        <div class="form-actions">
+          <button mat-button type="button" (click)="cancel()">Cancelar</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="isSaving">
+            {{ isSaving ? 'Guardando…' : 'Registrar' }}
+          </button>
+        </div>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
